@@ -6,7 +6,7 @@ This is a simple wordle clone I threw together to practice and learn some basic 
 
 ## Dependencies
 
-This project was inspired by (Wordle)[https://www.rust-lang.org/] and built using (Rust)[https://www.rust-lang.org/].
+This project was inspired by [Wordle](https://www.rust-lang.org/) and built using [Rust](https://www.rust-lang.org/).
 
 ## Installation
 
