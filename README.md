@@ -10,10 +10,28 @@ This project was inspired by [Wordle](https://www.rust-lang.org/) and built usin
 
 ## Installation
 
+To install the game, download the binary from the latest [release](https://github.com/jkhebel/wordle-rust/releases). If you'd rather build from source, be sure to follow the official guides for installing `rust` and `cargo` using `rustup` before cloning the repository. You can then build the source file from scratch using:
+```
+>cargo build --release
+```
+
+Or build and run the game using:
+```
+>cargo run
+```
+
 ## Getting Started
+
+Launching the game is easy! Simply navigate to the directory containing the binary and run:
+```
+>./wordle
+```
+Enjoy a never ending loop of wordle!
 
 ## Roadmap
 
-## License
-
-## Acknowledgements
+- Ability to choose word length and number of tries
+- Additional language support
+- Dictionary definitions for language learning
+- A simple GUI in rust
+- Bindings for training ML solvers
