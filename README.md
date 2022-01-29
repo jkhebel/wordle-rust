@@ -26,6 +26,20 @@ Launching the game is easy! Simply navigate to the directory containing the bina
 ```
 >./wordle
 ```
+
+If emoji aren't rendering correctly in your terminal, you can pass in the `--no-emoji` flag to replace then with standard characters.
+
+```
+>./wordle --no-emoji
+```
+
+Additional command line arguments can be viewed using the `--help` flag.
+
+```
+>/.wordle --help
+```
+
+
 Enjoy a never ending loop of wordle!
 
 ## Roadmap
