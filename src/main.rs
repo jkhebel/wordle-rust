@@ -1,3 +1,4 @@
+use clap::Parser;
 use rand::seq::SliceRandom;
 use std::{
     collections::HashMap,
@@ -5,15 +6,24 @@ use std::{
     io::{self, BufRead, BufReader},
 };
 
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Args {
+    /// Option to turn off emoji
+    #[clap(short, long)]
+    no_emoji: bool,
+
+}
+
+
 
 fn main() {
 
-    // TODO clap for CLI 
     // TODO get lang --> keep it in english for now
     // TODO prompt for number of letters --> start w 5
     // TODO prompt for n of tries --> start w 6, -1 means infinite
 
-    let use_emoji = true;
+    let args = Args::parse();
 
     const NO_EMOJI : [(&str, char); 4] = [
                             ("GOOD", 'O'),
@@ -29,7 +39,7 @@ fn main() {
                         ];
 
     let mut glyphs: HashMap<&str, char> = HashMap::new();
-    if use_emoji {
+    if !args.no_emoji {
         glyphs.extend(EMOJI);
     } else {
         glyphs.extend(NO_EMOJI);
