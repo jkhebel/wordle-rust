@@ -5,17 +5,40 @@ use std::{
     io::{self, BufRead, BufReader},
 };
 
+
 fn main() {
+
+    // TODO clap for CLI 
     // TODO get lang --> keep it in english for now
     // TODO prompt for number of letters --> start w 5
     // TODO prompt for n of tries --> start w 6, -1 means infinite
 
+    let use_emoji = true;
+
+    const NO_EMOJI : [(&str, char); 4] = [
+                            ("GOOD", 'O'),
+                            ("BAD", 'X'),
+                            ("LOST", '?'),
+                            ("EMPTY", '.')
+                        ];
+    const EMOJI : [(&str, char); 4] = [
+                            ("GOOD", '\u{1F7E9}'),
+                            ("BAD", '\u{1F7E5}'),
+                            ("LOST", '\u{1F7E8}'),
+                            ("EMPTY", '\u{2B1B}')
+                        ];
+
+    let mut glyphs: HashMap<&str, char> = HashMap::new();
+    if use_emoji {
+        glyphs.extend(EMOJI);
+    } else {
+        glyphs.extend(NO_EMOJI);
+    }
+    
+
     // game parameters
     const WORD_SIZE: usize = 5; // word size
     const MAX_GUESSES: usize = 6; // number of guesses
-
-    // store glyph for empty cell
-    const EMPTY : char = '\u{2B1B}';
 
     // load word list
     let filename: &str = "./words.txt";
@@ -26,7 +49,7 @@ fn main() {
                                             .into_iter()
                                             .filter(|x| x.chars().count() == WORD_SIZE)
                                             .collect();
-    let hash: HashMap<_, _> = possible_words.clone()
+    let hash: HashMap<String, i32> = possible_words.clone()
                                             .into_iter()
                                             .map(|x| (x, 1))
                                             .collect();
@@ -42,7 +65,7 @@ fn main() {
         // store guesses in mutable vector
         let mut guesses: Vec<String> = Vec::new();
         // generate scoreboard
-        let mut score_board: Vec<Vec<char>> = vec![vec![EMPTY as char; WORD_SIZE]; MAX_GUESSES];
+        let mut score_board: Vec<Vec<char>> = vec![vec![glyphs["EMPTY"]; WORD_SIZE]; MAX_GUESSES];
         print_score(&score_board, &guesses, &MAX_GUESSES);
         // store unused letters
         let mut alphabet : Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
@@ -52,10 +75,10 @@ fn main() {
         for i in 0..MAX_GUESSES {
             // read  in user guess word
             println!("\nGuess a word:\t");
-            let mut guess : String = input_guess(&hash);
+            let guess : String = input_guess(&hash);
             
             // grade the guess
-            score_board[i] = grade(&guess, &answer);
+            score_board[i] = grade(&guess, &answer, &glyphs);
             // remove guessed letters from unused letters
             alphabet.retain(|c| !guess.contains(*c) );
             // store guess in vector
@@ -88,7 +111,7 @@ fn main() {
     }
 }
 
-fn input_guess(viable_words: &HashMap<_,_>) -> String {
+fn input_guess(viable_words: &HashMap<String,i32>) -> String {
     // read in user guess and validate word is valid
     loop { // loop until we get a valid guess
         // read in guess
@@ -102,9 +125,8 @@ fn input_guess(viable_words: &HashMap<_,_>) -> String {
     }
 }
 
-fn grade(guess: &String, answer: &String) -> Vec<char> {
+fn grade(guess: &String, answer: &String, glyph: &HashMap<&str,char>) -> Vec<char> {
     // grade the current guess, returning a row for the scoreboard
-    let (good, lost, bad) = ('\u{1F7E9}', '\u{1F7E8}', '\u{1F7E5}'); // glyphs
     // convert strings to vec<char>
     let guess_chars: Vec<_> = guess.chars().collect();
     let ans_chars: Vec<_> = answer.chars().collect();
@@ -116,11 +138,11 @@ fn grade(guess: &String, answer: &String) -> Vec<char> {
         let ans_char : char = ans_chars[c];
         // grade each guess char as good, bad, or lost
         if guess_char == ans_char {
-            score[c] = good;
+            score[c] = glyph["GOOD"];
         } else if answer.contains(guess_char) {
-            score[c] = lost;
+            score[c] = glyph["LOST"];
         } else {
-            score[c] = bad;
+            score[c] = glyph["BAD"];
         }
     }
     return score;
